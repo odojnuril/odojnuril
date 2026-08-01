@@ -1,0 +1,657 @@
+<script>
+    // --- State Management ---
+    let currentUser = null; // { username, name, role }
+    let isDarkMode = false;
+    let dataGuruCache = [];
+
+    // --- On Load Init ---
+    document.addEventListener('DOMContentLoaded', () => {
+        // Set Default Date
+        document.getElementById('currentDateHeader').textContent = formatDateIndo(new Date());
+        
+        // Populate Form Juz Checkboxes (1-30)
+        populateJuzGrid();
+
+        // Check if user is already logged in (using sessionStorage for simple persistence during session)
+        const storedUser = sessionStorage.getItem('tilawahUser');
+        if (storedUser) {
+            currentUser = JSON.parse(storedUser);
+            setupUIForUser();
+        } else {
+            // Setup default date for daily recap input
+            document.getElementById('tglRekapWA').valueAsDate = new Date();
+            document.getElementById('filterTglLaporanAdmin').valueAsDate = new Date();
+        }
+    });
+
+    // --- Utility Functions ---
+    function showLoader(text = 'Memproses...') {
+        document.getElementById('loaderText').textContent = text;
+        document.getElementById('globalLoader').classList.remove('hidden');
+    }
+
+    function hideLoader() {
+        document.getElementById('globalLoader').classList.add('hidden');
+    }
+
+    function showToast(title, message, type = 'success') {
+        const toast = document.getElementById('toast');
+        const icon = document.getElementById('toastIcon');
+        
+        if (type === 'success') {
+            toast.className = 'fixed top-5 right-5 z-[110] transform transition-all duration-300 bg-white border-l-4 border-green-500 shadow-lg rounded-r-md p-4 max-w-sm flex items-start translate-y-0 opacity-100';
+            icon.innerHTML = '<i class="fas fa-check-circle text-green-500 text-xl"></i>';
+        } else {
+            toast.className = 'fixed top-5 right-5 z-[110] transform transition-all duration-300 bg-white border-l-4 border-red-500 shadow-lg rounded-r-md p-4 max-w-sm flex items-start translate-y-0 opacity-100';
+            icon.innerHTML = '<i class="fas fa-exclamation-circle text-red-500 text-xl"></i>';
+        }
+
+        document.getElementById('toastTitle').textContent = title;
+        document.getElementById('toastMessage').textContent = message;
+
+        setTimeout(() => hideToast(), 3000);
+    }
+
+    function hideToast() {
+        const toast = document.getElementById('toast');
+        toast.classList.add('translate-y-[-150%]', 'opacity-0');
+        toast.classList.remove('translate-y-0', 'opacity-100');
+    }
+
+    function formatDateIndo(dateStr) {
+        if(!dateStr) return "-";
+        const date = new Date(dateStr);
+        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        return date.toLocaleDateString('id-ID', options);
+    }
+    
+    function formatDateShort(dateStr) {
+        if(!dateStr) return "-";
+        const date = new Date(dateStr);
+        return date.toLocaleDateString('id-ID', { year: 'numeric', month: 'short', day: 'numeric' });
+    }
+
+    // --- UI Interactions ---
+    function toggleSidebar() {
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebarOverlay');
+        
+        if (sidebar.classList.contains('-translate-x-full')) {
+            sidebar.classList.remove('-translate-x-full', 'hidden');
+            overlay.classList.remove('hidden');
+        } else {
+            sidebar.classList.add('-translate-x-full');
+            // Wait for transition before hiding
+            setTimeout(() => {
+                sidebar.classList.add('hidden');
+                overlay.classList.add('hidden');
+            }, 300);
+        }
+    }
+
+    function showPage(pageId) {
+        // Hide all pages
+        document.querySelectorAll('.page-content').forEach(el => el.classList.add('hidden'));
+        // Remove active class from all nav links
+        document.querySelectorAll('.nav-link').forEach(el => el.classList.remove('active'));
+        
+        // Show target page
+        document.getElementById(`page-${pageId}`).classList.remove('hidden');
+        
+        // Find and activate nav link
+        const navLink = document.querySelector(`.nav-link[data-page="${pageId}"]`);
+        if (navLink) navLink.classList.add('active');
+
+        // Set Title
+        const titleMap = {
+            'dashboard': 'Dashboard',
+            'dataGuru': 'Manajemen Data Guru',
+            'rekapHarian': 'Rekap Harian (WhatsApp)',
+            'semuaLaporan': 'Semua Data Laporan',
+            'inputLaporan': 'Form Isi Laporan',
+            'riwayatPribadi': 'Riwayat Laporan Saya'
+        };
+        document.getElementById('pageTitle').textContent = titleMap[pageId] || 'Aplikasi';
+
+        // Load specific data based on page
+        if (pageId === 'dashboard') loadDashboard();
+        if (pageId === 'dataGuru') loadDataGuru();
+        if (pageId === 'riwayatPribadi') loadRiwayatPribadi();
+        if (pageId === 'semuaLaporan') loadSemuaLaporan();
+
+        // Close sidebar on mobile after clicking
+        if (window.innerWidth < 768) {
+            toggleSidebar();
+        }
+    }
+
+    function toggleDarkMode() {
+        isDarkMode = !isDarkMode;
+        document.documentElement.classList.toggle('dark');
+        const icon = document.getElementById('darkModeIcon');
+        if (isDarkMode) {
+            icon.classList.remove('fa-moon');
+            icon.classList.add('fa-sun');
+        } else {
+            icon.classList.remove('fa-sun');
+            icon.classList.add('fa-moon');
+        }
+    }
+
+    // --- Authentication Logic ---
+    function handleLogin(e) {
+        e.preventDefault();
+        const user = document.getElementById('username').value;
+        const pass = document.getElementById('password').value;
+        const btn = document.getElementById('btnLogin');
+        const errDiv = document.getElementById('loginError');
+
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Memeriksa...';
+        errDiv.classList.add('hidden');
+
+        google.script.run
+            .withSuccessHandler(function(result) {
+                btn.disabled = false;
+                btn.innerHTML = '<span class="absolute left-0 inset-y-0 flex items-center pl-3"><i class="fas fa-lock text-green-300 group-hover:text-green-200"></i></span> Masuk';
+                
+                if (result.success) {
+                    currentUser = result;
+                    sessionStorage.setItem('tilawahUser', JSON.stringify(currentUser));
+                    setupUIForUser();
+                } else {
+                    errDiv.textContent = result.message;
+                    errDiv.classList.remove('hidden');
+                }
+            })
+            .withFailureHandler(function(error) {
+                btn.disabled = false;
+                btn.innerHTML = 'Masuk';
+                errDiv.textContent = 'Terjadi kesalahan sistem: ' + error.message;
+                errDiv.classList.remove('hidden');
+            })
+            .loginUser(user, pass);
+    }
+
+    function handleLogout() {
+        currentUser = null;
+        sessionStorage.removeItem('tilawahUser');
+        document.getElementById('appView').classList.add('hidden');
+        document.getElementById('loginView').classList.remove('hidden');
+        document.getElementById('loginForm').reset();
+    }
+
+    function setupUIForUser() {
+        document.getElementById('loginView').classList.add('hidden');
+        document.getElementById('appView').classList.remove('hidden');
+        
+        document.getElementById('userNameDisplay').textContent = currentUser.name;
+        
+        const badge = document.getElementById('userRoleBadge');
+        badge.textContent = (currentUser.role === 'admin' ? 'Administrator' : 'Guru');
+        if (currentUser.role === 'admin') {
+            badge.className = 'inline-block mt-1 px-2 py-0.5 text-xs font-semibold rounded-full bg-red-100 text-red-800';
+            document.getElementById('menuAdmin').classList.remove('hidden');
+            showPage('dashboard');
+        } else {
+            badge.className = 'inline-block mt-1 px-2 py-0.5 text-xs font-semibold rounded-full bg-blue-100 text-blue-800';
+            document.getElementById('menuAdmin').classList.add('hidden');
+            // Setup form laporan default data
+            document.getElementById('lapTanggal').valueAsDate = new Date();
+            document.getElementById('lapNama').value = currentUser.name;
+            showPage('inputLaporan');
+        }
+    }
+
+    // --- Dashboard Logic ---
+    function loadDashboard() {
+        showLoader('Memuat statistik...');
+        google.script.run
+            .withSuccessHandler(function(stats) {
+                hideLoader();
+                // Update Cards
+                document.getElementById('stat-totalGuru').textContent = stats.totalGuru;
+                document.getElementById('stat-sudahLapor').textContent = stats.sudahLapor;
+                document.getElementById('stat-belumLapor').textContent = stats.belumLapor;
+                
+                // Progress Bar
+                document.getElementById('stat-progressText').textContent = stats.progress + '%';
+                document.getElementById('stat-progressBar').style.width = stats.progress + '%';
+
+                // Details
+                document.getElementById('stat-khalas').textContent = stats.khalas;
+                document.getElementById('stat-tilawah').textContent = stats.tilawahSebagian;
+                document.getElementById('stat-murojaah').textContent = stats.murojaah;
+                document.getElementById('stat-hafalan').textContent = stats.hafalan;
+                document.getElementById('stat-halangan').textContent = stats.halangan;
+                document.getElementById('stat-tidak').textContent = stats.tidakTilawah;
+
+                // Belum Lapor List
+                const listUl = document.getElementById('listBelumLapor');
+                document.getElementById('stat-belumCountBadge').textContent = stats.listBelumLapor.length + ' Guru';
+                listUl.innerHTML = '';
+                
+                if (stats.listBelumLapor.length === 0) {
+                    listUl.innerHTML = '<li class="py-3 text-sm text-center text-green-600 font-medium"><i class="fas fa-check-circle mr-1"></i> Alhamdulillah, semua guru sudah lapor.</li>';
+                    document.getElementById('btnIngatkan').classList.add('hidden');
+                } else {
+                    stats.listBelumLapor.forEach(nama => {
+                        listUl.innerHTML += `<li class="py-2.5 text-sm text-gray-700 font-medium flex items-center"><div class="w-2 h-2 rounded-full bg-red-400 mr-2"></div>${nama}</li>`;
+                    });
+                    if (currentUser && currentUser.role === 'admin') {
+                        document.getElementById('btnIngatkan').classList.remove('hidden');
+                        document.getElementById('btnIngatkan').onclick = () => {
+                            let msg = "Assalamu'alaikum wr. wb.\nMohon izin mengingatkan kepada Bapak/Ibu guru berikut untuk mengisi laporan tilawah harian hari ini:\n\n";
+                            stats.listBelumLapor.forEach((n, i) => msg += `${i+1}. ${n}\n`);
+                            msg += "\nTerima kasih atas perhatiannya. Jazakumullah khairan.";
+                            copyTextToClipboard(msg);
+                        };
+                    }
+                }
+            })
+            .withFailureHandler(function(err) {
+                hideLoader();
+                showToast('Error', 'Gagal memuat dashboard: ' + err.message, 'error');
+            })
+            .getDashboardStats(new Date().toISOString().split('T')[0]);
+    }
+
+    // --- Input Laporan Logic ---
+    function populateJuzGrid() {
+        const grid = document.getElementById('gridJuz');
+        let html = '';
+        for(let i=1; i<=30; i++) {
+            html += `
+            <label class="flex items-center cursor-pointer p-2 border rounded hover:bg-green-100 bg-white justify-center">
+                <input type="checkbox" name="lapJuz" value="${i}" class="mr-2 h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded">
+                <span class="text-sm font-medium text-gray-700">${i}</span>
+            </label>
+            `;
+        }
+        grid.innerHTML = html;
+    }
+
+    function toggleJuzInput() {
+        const isKhalas = Array.from(document.querySelectorAll('input[name="lapStatus"]:checked')).map(cb => cb.value).includes('✅');
+        const container = document.getElementById('containerJuz');
+        if (isKhalas) {
+            container.classList.remove('hidden');
+        } else {
+            container.classList.add('hidden');
+            // Uncheck all juz
+            document.querySelectorAll('input[name="lapJuz"]').forEach(cb => cb.checked = false);
+        }
+    }
+
+    function submitLaporan(e) {
+        e.preventDefault();
+        
+        const tanggal = document.getElementById('lapTanggal').value;
+        const catatan = document.getElementById('lapCatatan').value;
+        
+        const statusChecked = Array.from(document.querySelectorAll('input[name="lapStatus"]:checked')).map(cb => cb.value);
+        const juzChecked = Array.from(document.querySelectorAll('input[name="lapJuz"]:checked')).map(cb => cb.value);
+
+        if (statusChecked.length === 0) {
+            document.getElementById('statusError').classList.remove('hidden');
+            return;
+        } else {
+            document.getElementById('statusError').classList.add('hidden');
+        }
+
+        if (statusChecked.includes('✅') && juzChecked.length === 0) {
+            document.getElementById('juzError').classList.remove('hidden');
+            return;
+        } else {
+            document.getElementById('juzError').classList.add('hidden');
+        }
+
+        const data = {
+            tanggal: tanggal,
+            status: statusChecked,
+            juz: juzChecked,
+            catatan: catatan
+        };
+
+        showLoader('Menyimpan laporan...');
+        const btnSubmit = document.getElementById('btnSubmitLaporan');
+        btnSubmit.disabled = true;
+
+        google.script.run
+            .withSuccessHandler(function(res) {
+                hideLoader();
+                btnSubmit.disabled = false;
+                if (res.success) {
+                    showToast('Sukses', res.message, 'success');
+                    // Reset form partially
+                    document.querySelectorAll('input[name="lapStatus"]').forEach(cb => cb.checked = false);
+                    document.querySelectorAll('input[name="lapJuz"]').forEach(cb => cb.checked = false);
+                    document.getElementById('lapCatatan').value = '';
+                    toggleJuzInput();
+                    
+                    // Redirect to history
+                    setTimeout(() => showPage('riwayatPribadi'), 1500);
+                }
+            })
+            .withFailureHandler(function(err) {
+                hideLoader();
+                btnSubmit.disabled = false;
+                showToast('Error', err.message, 'error');
+            })
+            .simpanLaporan(data, currentUser.username);
+    }
+
+    // --- Riwayat Pribadi Logic ---
+    function loadRiwayatPribadi() {
+        const tbody = document.getElementById('tableBodyRiwayat');
+        tbody.innerHTML = '<tr><td colspan="4" class="px-6 py-4 text-center text-sm text-gray-500">Memuat data...</td></tr>';
+        
+        google.script.run
+            .withSuccessHandler(function(data) {
+                tbody.innerHTML = '';
+                if(data.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="4" class="px-6 py-4 text-center text-sm text-gray-500">Belum ada riwayat laporan.</td></tr>';
+                    return;
+                }
+
+                data.forEach(row => {
+                    let juzStr = row.Juz ? `<span class="bg-green-100 text-green-800 text-xs px-2 py-0.5 rounded mr-1">Juz ${row.Juz}</span>` : '-';
+                    
+                    // Parse multiple status icons to look nice
+                    let statusHtml = '';
+                    String(row.Status).split(',').forEach(s => {
+                        let icon = s.trim();
+                        if(icon) statusHtml += `<span class="text-lg mr-1" title="${icon}">${icon}</span>`;
+                    });
+
+                    tbody.innerHTML += `
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${formatDateShort(row.Tanggal)}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${statusHtml}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${juzStr}</td>
+                            <td class="px-6 py-4 text-sm text-gray-500">${row.Catatan || '-'}</td>
+                        </tr>
+                    `;
+                });
+            })
+            .withFailureHandler(function(err) {
+                tbody.innerHTML = `<tr><td colspan="4" class="px-6 py-4 text-center text-sm text-red-500">Error: ${err.message}</td></tr>`;
+            })
+            .getLaporanPribadi(currentUser.username);
+    }
+
+    // --- Manajemen Guru Logic (Admin) ---
+    function loadDataGuru() {
+        const tbody = document.getElementById('tableBodyGuru');
+        tbody.innerHTML = '<tr><td colspan="6" class="px-6 py-4 text-center text-sm text-gray-500"><i class="fas fa-spinner fa-spin mr-2"></i>Memuat data...</td></tr>';
+        
+        google.script.run
+            .withSuccessHandler(function(data) {
+                dataGuruCache = data; // save to cache for filtering
+                renderTableGuru(data);
+            })
+            .withFailureHandler(function(err) {
+                tbody.innerHTML = `<tr><td colspan="6" class="px-6 py-4 text-center text-sm text-red-500">Error: ${err.message}</td></tr>`;
+            })
+            .getDaftarGuru();
+    }
+
+    function renderTableGuru(data) {
+        const tbody = document.getElementById('tableBodyGuru');
+        tbody.innerHTML = '';
+        if(data.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="6" class="px-6 py-4 text-center text-sm text-gray-500">Belum ada data guru.</td></tr>';
+            return;
+        }
+
+        data.forEach(row => {
+            let statusBadge = row.Status === 'Aktif' 
+                ? '<span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Aktif</span>'
+                : '<span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">Tidak Aktif</span>';
+            
+            tbody.innerHTML += `
+                <tr class="hover:bg-gray-50 transition-colors">
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${row.Nama}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${row['Jenis Kelamin'] || '-'}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${row.Jabatan}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${row.Username}</td>
+                    <td class="px-6 py-4 whitespace-nowrap">${statusBadge}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                        <button onclick='openModalGuru("edit", ${JSON.stringify(row).replace(/'/g, "&apos;")})' class="text-indigo-600 hover:text-indigo-900 mr-3"><i class="fas fa-edit"></i> Edit</button>
+                        <button onclick='deleteGuru("${row.ID}")' class="text-red-600 hover:text-red-900"><i class="fas fa-trash"></i> Hapus</button>
+                    </td>
+                </tr>
+            `;
+        });
+    }
+
+    function filterTableGuru() {
+        const searchTerm = document.getElementById('searchGuru').value.toLowerCase();
+        const filtered = dataGuruCache.filter(guru => 
+            guru.Nama.toLowerCase().includes(searchTerm) || 
+            guru.Username.toLowerCase().includes(searchTerm)
+        );
+        renderTableGuru(filtered);
+    }
+
+    function openModalGuru(action, data = null) {
+        document.getElementById('modalGuru').classList.remove('hidden');
+        document.getElementById('guruAction').value = action;
+        
+        if (action === 'add') {
+            document.getElementById('modalGuruTitle').textContent = 'Tambah Guru Baru';
+            document.getElementById('formInputGuru').reset();
+            document.getElementById('guruId').value = '';
+            document.getElementById('guruPassword').required = true;
+            document.getElementById('hintPasswordEdit').classList.add('hidden');
+        } else if (action === 'edit' && data) {
+            document.getElementById('modalGuruTitle').textContent = 'Edit Data Guru';
+            document.getElementById('guruId').value = data.ID;
+            document.getElementById('guruNama').value = data.Nama;
+            document.getElementById('guruJK').value = data['Jenis Kelamin'] || 'L';
+            document.getElementById('guruJabatan').value = data.Jabatan;
+            document.getElementById('guruUsername').value = data.Username;
+            document.getElementById('guruStatus').value = data.Status;
+            
+            document.getElementById('guruPassword').value = ''; // Don't show old password
+            document.getElementById('guruPassword').required = false; // Not required on edit
+            document.getElementById('hintPasswordEdit').classList.remove('hidden');
+        }
+    }
+
+    function closeModalGuru() {
+        document.getElementById('modalGuru').classList.add('hidden');
+    }
+
+    function submitFormGuru(e) {
+        e.preventDefault();
+        const data = {
+            action: document.getElementById('guruAction').value,
+            id: document.getElementById('guruId').value,
+            nama: document.getElementById('guruNama').value,
+            jk: document.getElementById('guruJK').value,
+            jabatan: document.getElementById('guruJabatan').value,
+            username: document.getElementById('guruUsername').value,
+            password: document.getElementById('guruPassword').value,
+            status: document.getElementById('guruStatus').value
+        };
+
+        showLoader('Menyimpan data...');
+        google.script.run
+            .withSuccessHandler(function(res) {
+                hideLoader();
+                if (res.success) {
+                    showToast('Sukses', res.message, 'success');
+                    closeModalGuru();
+                    loadDataGuru(); // Refresh table
+                }
+            })
+            .withFailureHandler(function(err) {
+                hideLoader();
+                showToast('Error', err.message, 'error');
+            })
+            .simpanGuru(data);
+    }
+
+    function deleteGuru(id) {
+        // Since we can't use standard confirm(), we create a custom basic confirmation logic
+        // Ideally a modal, but to keep single file simple, a two-step button could work. 
+        // For standard requirement, we'll bypass the prompt and just execute, OR we build a quick custom modal.
+        // Let's implement a quick custom confirmation overlay.
+        if(!window.confirmDialogCreated) {
+            const div = document.createElement('div');
+            div.id = 'customConfirm';
+            div.className = 'fixed inset-0 z-[120] bg-gray-600 bg-opacity-50 hidden flex items-center justify-center';
+            div.innerHTML = `
+                <div class="bg-white rounded-lg p-6 max-w-sm w-full mx-4 shadow-xl text-center">
+                    <i class="fas fa-exclamation-triangle text-red-500 text-4xl mb-4"></i>
+                    <h3 class="text-lg font-medium text-gray-900 mb-2">Konfirmasi Hapus</h3>
+                    <p class="text-sm text-gray-500 mb-4">Apakah Anda yakin ingin menghapus data guru ini? Tindakan ini tidak dapat dibatalkan.</p>
+                    <div class="flex justify-center space-x-3">
+                        <button id="btnConfirmCancel" class="px-4 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200">Batal</button>
+                        <button id="btnConfirmOk" class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700">Ya, Hapus</button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(div);
+            window.confirmDialogCreated = true;
+        }
+
+        const confirmDialog = document.getElementById('customConfirm');
+        confirmDialog.classList.remove('hidden');
+
+        document.getElementById('btnConfirmCancel').onclick = () => {
+            confirmDialog.classList.add('hidden');
+        };
+
+        document.getElementById('btnConfirmOk').onclick = () => {
+            confirmDialog.classList.add('hidden');
+            showLoader('Menghapus data...');
+            google.script.run
+                .withSuccessHandler(function(res) {
+                    hideLoader();
+                    showToast('Sukses', res.message, 'success');
+                    loadDataGuru();
+                })
+                .withFailureHandler(function(err) {
+                    hideLoader();
+                    showToast('Error', err.message, 'error');
+                })
+                .hapusGuru(id);
+        };
+    }
+
+    // --- Semua Laporan Logic (Admin) ---
+    function loadSemuaLaporan() {
+        const tbody = document.getElementById('tableBodySemuaLaporan');
+        const filterTgl = document.getElementById('filterTglLaporanAdmin').value;
+        tbody.innerHTML = '<tr><td colspan="5" class="px-6 py-4 text-center text-sm text-gray-500"><i class="fas fa-spinner fa-spin mr-2"></i>Memuat data...</td></tr>';
+        
+        google.script.run
+            .withSuccessHandler(function(data) {
+                tbody.innerHTML = '';
+                if(data.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="5" class="px-6 py-4 text-center text-sm text-gray-500">Tidak ada data laporan pada tanggal ini.</td></tr>';
+                    return;
+                }
+
+                // Sort by date descending
+                data.sort((a, b) => new Date(b.Tanggal) - new Date(a.Tanggal));
+
+                data.forEach(row => {
+                     // Parse multiple status icons to look nice
+                    let statusHtml = '';
+                    String(row.Status).split(',').forEach(s => {
+                        let icon = s.trim();
+                        if(icon) statusHtml += `<span class="text-lg mr-1" title="${icon}">${icon}</span>`;
+                    });
+
+                    tbody.innerHTML += `
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${formatDateShort(row.Tanggal)}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${row['Nama Guru']}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${statusHtml}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${row.Juz ? 'Juz ' + row.Juz : '-'}</td>
+                            <td class="px-6 py-4 text-sm text-gray-500 truncate max-w-xs" title="${row.Catatan || ''}">${row.Catatan || '-'}</td>
+                        </tr>
+                    `;
+                });
+            })
+            .withFailureHandler(function(err) {
+                tbody.innerHTML = `<tr><td colspan="5" class="px-6 py-4 text-center text-sm text-red-500">Error: ${err.message}</td></tr>`;
+            })
+            .getSemuaLaporan(filterTgl);
+    }
+
+    // --- Rekap WA Logic (Admin) ---
+    function generateWA() {
+        const tgl = document.getElementById('tglRekapWA').value;
+        if(!tgl) {
+            showToast('Peringatan', 'Silahkan pilih tanggal terlebih dahulu', 'error');
+            return;
+        }
+
+        const outBox = document.getElementById('outputRekapWA');
+        const btnGen = document.querySelector('button[onclick="generateWA()"]');
+        const btnCopy = document.getElementById('btnCopyWA');
+        const btnShare = document.getElementById('btnShareWA');
+
+        outBox.innerHTML = '<div class="flex items-center justify-center h-full text-gray-500"><i class="fas fa-spinner fa-spin mr-2"></i> Meng-generate rekap...</div>';
+        btnGen.disabled = true;
+        btnCopy.disabled = true;
+        btnShare.disabled = true;
+
+        google.script.run
+            .withSuccessHandler(function(text) {
+                outBox.textContent = text;
+                btnGen.disabled = false;
+                btnCopy.disabled = false;
+                btnShare.disabled = false;
+            })
+            .withFailureHandler(function(err) {
+                outBox.textContent = 'Gagal menghasilkan rekap: ' + err.message;
+                btnGen.disabled = false;
+            })
+            .generateRekapWA(tgl);
+    }
+
+    function copyToClipboard(elementId) {
+        const text = document.getElementById(elementId).textContent;
+        copyTextToClipboard(text);
+    }
+
+    function copyTextToClipboard(text) {
+        // Fallback for document.execCommand
+        const textArea = document.createElement("textarea");
+        textArea.value = text;
+        // Avoid scrolling to bottom
+        textArea.style.top = "0";
+        textArea.style.left = "0";
+        textArea.style.position = "fixed";
+
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+
+        try {
+            const successful = document.execCommand('copy');
+            if(successful) {
+                showToast('Sukses', 'Teks berhasil disalin ke clipboard!', 'success');
+            } else {
+                showToast('Error', 'Gagal menyalin teks.', 'error');
+            }
+        } catch (err) {
+            showToast('Error', 'Oops, tidak dapat menyalin', 'error');
+        }
+
+        document.body.removeChild(textArea);
+    }
+
+    function shareToWhatsApp() {
+        const text = document.getElementById('outputRekapWA').textContent;
+        const encodedText = encodeURIComponent(text);
+        const waUrl = `https://wa.me/?text=${encodedText}`;
+        window.open(waUrl, '_blank');
+    }
+
+</script>
