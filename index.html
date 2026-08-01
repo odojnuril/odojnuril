@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <base target="_top">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Laporan Tilawah SDIT Nurul Ilmi</title>
@@ -12,7 +11,6 @@
     <!-- Google Fonts: Inter -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
-    <!-- Config Tailwind -->
     <script>
         tailwind.config = {
             theme: {
@@ -22,7 +20,7 @@
                     },
                     colors: {
                         primary: '#16a34a', // Green-600
-                        secondary: '#d97706', // Amber-600 (Goldish)
+                        secondary: '#d97706', // Amber-600
                         dark: '#1e293b',
                         light: '#f8fafc',
                     }
@@ -31,38 +29,80 @@
             darkMode: 'class',
         }
     </script>
-    <?!= include('Style'); ?>
+    <style>
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1; 
+            border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #c1c1c1; 
+            border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #a8a8a8; 
+        }
+
+        .page-content {
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .nav-link.active {
+            background-color: #f0fdf4; 
+            color: #16a34a; 
+            border-right: 3px solid #16a34a;
+        }
+
+        /* Dark Mode overrides */
+        html.dark body { background-color: #0f172a; color: #e2e8f0; }
+        html.dark .bg-white { background-color: #1e293b; }
+        html.dark .bg-gray-50 { background-color: #0f172a; }
+        html.dark .text-gray-900, html.dark .text-gray-800 { color: #f8fafc; }
+        html.dark .text-gray-700, html.dark .text-gray-600, html.dark .text-gray-500 { color: #cbd5e1; }
+        html.dark .border-gray-100, html.dark .border-gray-200, html.dark .border-gray-300 { border-color: #334155; }
+        html.dark input, html.dark select, html.dark textarea { background-color: #0f172a; border-color: #334155; color: #f8fafc; }
+        
+        input[type=number]::-webkit-inner-spin-button, 
+        input[type=number]::-webkit-outer-spin-button { 
+            -webkit-appearance: none; 
+            margin: 0; 
+        }
+        input[type=number] { -moz-appearance: textfield; }
+    </style>
 </head>
 <body class="bg-gray-50 text-gray-800 font-sans antialiased transition-colors duration-300">
 
     <!-- ================= VIEW LOGIN ================= -->
     <div id="loginView" class="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 relative overflow-hidden bg-gradient-to-br from-green-50 to-white">
-        <!-- Dekorasi Background -->
         <div class="absolute top-0 left-0 w-64 h-64 bg-green-200 rounded-full mix-blend-multiply filter blur-3xl opacity-30 transform -translate-x-1/2 -translate-y-1/2"></div>
         <div class="absolute bottom-0 right-0 w-80 h-80 bg-amber-200 rounded-full mix-blend-multiply filter blur-3xl opacity-30 transform translate-x-1/3 translate-y-1/3"></div>
 
         <div class="max-w-md w-full space-y-8 bg-white p-8 sm:p-10 rounded-2xl shadow-xl z-10 border border-gray-100">
             <div class="text-center">
-                <!-- Logos -->
                 <div class="flex justify-center space-x-4 mb-4">
-                    <img src="WhatsApp Image 2026-07-30 at 11.53.13.jpeg" alt="Logo SDIT Nurul Ilmi" class="h-20 w-auto rounded-full shadow-sm">
-                    <img src="logo.png" alt="Logo 1 Day 1 Juz" class="h-20 w-auto rounded-full shadow-sm">
+                    <!-- Pastikan file gambar ini berada di root folder GitHub Anda -->
+                    <img src="WhatsApp Image 2026-07-30 at 11.53.13.jpeg" alt="Logo SDIT Nurul Ilmi" class="h-20 w-auto rounded-full shadow-sm" onerror="this.src='https://placehold.co/80x80/16a34a/ffffff?text=Logo'">
+                    <img src="logo.png" alt="Logo 1 Day 1 Juz" class="h-20 w-auto rounded-full shadow-sm" onerror="this.src='https://placehold.co/80x80/d97706/ffffff?text=ODOJ'">
                 </div>
                 <h2 class="mt-2 text-center text-2xl sm:text-3xl font-extrabold text-gray-900">
                     Sistem Laporan Tilawah
                 </h2>
-                <p class="mt-2 text-center text-sm text-gray-600">
-                    SDIT Nurul Ilmi
-                </p>
+                <p class="mt-2 text-center text-sm text-gray-600">SDIT Nurul Ilmi</p>
             </div>
             <form class="mt-8 space-y-6" id="loginForm" onsubmit="handleLogin(event)">
                 <div class="rounded-md shadow-sm -space-y-px">
                     <div>
-                        <label for="username" class="sr-only">Username</label>
                         <input id="username" name="username" type="text" required class="appearance-none rounded-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-primary focus:border-primary focus:z-10 sm:text-sm bg-gray-50 transition-colors" placeholder="Username">
                     </div>
                     <div>
-                        <label for="password" class="sr-only">Password</label>
                         <input id="password" name="password" type="password" required class="appearance-none rounded-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-primary focus:border-primary focus:z-10 sm:text-sm bg-gray-50 transition-colors" placeholder="Password">
                     </div>
                 </div>
@@ -83,14 +123,13 @@
     <!-- ================= MAIN APP VIEW ================= -->
     <div id="appView" class="hidden h-screen flex overflow-hidden bg-gray-100">
         
-        <!-- Sidebar (Desktop & Mobile) -->
+        <!-- Sidebar -->
         <aside id="sidebar" class="bg-white w-64 flex-shrink-0 border-r border-gray-200 hidden md:flex flex-col transition-all duration-300 z-20 fixed inset-y-0 left-0 transform -translate-x-full md:relative md:translate-x-0 shadow-lg md:shadow-none">
             <div class="h-16 flex items-center justify-between px-4 bg-primary text-white">
                 <div class="flex items-center space-x-2">
-                     <img src="logo.png" alt="Logo" class="h-8 w-8 bg-white rounded-full p-0.5">
+                     <img src="logo.png" alt="Logo" class="h-8 w-8 bg-white rounded-full p-0.5" onerror="this.src='https://placehold.co/40x40/ffffff/16a34a?text=O'">
                      <span class="font-bold text-lg truncate">App Tilawah</span>
                 </div>
-                <!-- Close btn for mobile -->
                 <button class="md:hidden text-white focus:outline-none" onclick="toggleSidebar()">
                     <i class="fas fa-times text-xl"></i>
                 </button>
@@ -107,7 +146,7 @@
                     <i class="fas fa-home w-6 text-center mr-2 text-gray-400"></i> Dashboard
                 </a>
                 
-                <!-- Menu Admin Only -->
+                <!-- Menu Admin -->
                 <div id="menuAdmin" class="hidden space-y-1">
                     <p class="px-3 pt-4 pb-2 text-xs font-semibold text-gray-400 uppercase tracking-wider">Admin Menu</p>
                     <a href="#" onclick="showPage('dataGuru')" class="nav-link flex items-center px-3 py-2.5 text-sm font-medium rounded-md text-gray-700 hover:text-primary hover:bg-green-50 transition-colors" data-page="dataGuru">
@@ -139,12 +178,11 @@
             </div>
         </aside>
 
-        <!-- Overlay for mobile sidebar -->
+        <!-- Overlay for mobile -->
         <div id="sidebarOverlay" class="fixed inset-0 bg-gray-600 bg-opacity-50 z-10 hidden md:hidden" onclick="toggleSidebar()"></div>
 
         <!-- Main Content Area -->
         <div class="flex-1 flex flex-col overflow-hidden">
-            <!-- Topbar -->
             <header class="bg-white shadow-sm z-10 h-16 flex items-center justify-between px-4 sm:px-6">
                 <div class="flex items-center">
                     <button class="md:hidden text-gray-500 hover:text-gray-700 focus:outline-none p-2 rounded-md hover:bg-gray-100 mr-2" onclick="toggleSidebar()">
@@ -160,47 +198,35 @@
                 </div>
             </header>
 
-            <!-- Main Content Container -->
             <main class="flex-1 overflow-y-auto bg-gray-50 p-4 sm:p-6" id="mainContent">
                 
                 <!-- PAGE: Dashboard -->
                 <div id="page-dashboard" class="page-content hidden space-y-6">
-                    <!-- Stats Grid -->
                     <div class="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
-                        <!-- Stat Card 1 -->
                         <div class="bg-white rounded-xl shadow-sm p-4 sm:p-5 border border-gray-100 flex items-center space-x-4">
-                            <div class="p-3 bg-blue-100 text-blue-600 rounded-lg">
-                                <i class="fas fa-users text-xl"></i>
-                            </div>
+                            <div class="p-3 bg-blue-100 text-blue-600 rounded-lg"><i class="fas fa-users text-xl"></i></div>
                             <div>
                                 <p class="text-sm font-medium text-gray-500">Total Guru</p>
                                 <p class="text-2xl font-bold text-gray-900" id="stat-totalGuru">-</p>
                             </div>
                         </div>
-                         <!-- Stat Card 2 -->
                         <div class="bg-white rounded-xl shadow-sm p-4 sm:p-5 border border-gray-100 flex items-center space-x-4">
-                            <div class="p-3 bg-green-100 text-green-600 rounded-lg">
-                                <i class="fas fa-check-circle text-xl"></i>
-                            </div>
+                            <div class="p-3 bg-green-100 text-green-600 rounded-lg"><i class="fas fa-check-circle text-xl"></i></div>
                             <div>
                                 <p class="text-sm font-medium text-gray-500">Sudah Lapor</p>
                                 <p class="text-2xl font-bold text-gray-900" id="stat-sudahLapor">-</p>
                             </div>
                         </div>
-                        <!-- Stat Card 3 -->
                         <div class="bg-white rounded-xl shadow-sm p-4 sm:p-5 border border-gray-100 flex items-center space-x-4">
-                            <div class="p-3 bg-red-100 text-red-600 rounded-lg">
-                                <i class="fas fa-times-circle text-xl"></i>
-                            </div>
+                            <div class="p-3 bg-red-100 text-red-600 rounded-lg"><i class="fas fa-times-circle text-xl"></i></div>
                             <div>
                                 <p class="text-sm font-medium text-gray-500">Belum Lapor</p>
                                 <p class="text-2xl font-bold text-gray-900" id="stat-belumLapor">-</p>
                             </div>
                         </div>
-                        <!-- Stat Card Progress -->
                         <div class="bg-white rounded-xl shadow-sm p-4 sm:p-5 border border-gray-100 flex flex-col justify-center">
                             <div class="flex justify-between items-center mb-1">
-                                <p class="text-sm font-medium text-gray-500">Progress Hari Ini</p>
+                                <p class="text-sm font-medium text-gray-500">Progress</p>
                                 <span class="text-sm font-bold text-primary" id="stat-progressText">0%</span>
                             </div>
                             <div class="w-full bg-gray-200 rounded-full h-2.5">
@@ -209,46 +235,31 @@
                         </div>
                     </div>
 
-                    <!-- Details Grid -->
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                        <!-- Rincian Status -->
                         <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
-                            <h3 class="text-lg font-semibold text-gray-800 mb-4 border-b pb-2">Rincian Laporan Hari Ini</h3>
+                            <h3 class="text-lg font-semibold text-gray-800 mb-4 border-b pb-2">Rincian Hari Ini</h3>
                             <div class="grid grid-cols-2 sm:grid-cols-3 gap-4">
                                 <div class="text-center p-3 bg-green-50 rounded-lg border border-green-100">
-                                    <div class="text-2xl mb-1">✅</div>
-                                    <div class="text-xl font-bold text-green-700" id="stat-khalas">0</div>
-                                    <div class="text-xs text-gray-600">Khalas Juz</div>
+                                    <div class="text-2xl mb-1">✅</div><div class="text-xl font-bold text-green-700" id="stat-khalas">0</div><div class="text-xs text-gray-600">Khalas Juz</div>
                                 </div>
                                 <div class="text-center p-3 bg-blue-50 rounded-lg border border-blue-100">
-                                    <div class="text-2xl mb-1">📖</div>
-                                    <div class="text-xl font-bold text-blue-700" id="stat-tilawah">0</div>
-                                    <div class="text-xs text-gray-600">Tilawah</div>
+                                    <div class="text-2xl mb-1">📖</div><div class="text-xl font-bold text-blue-700" id="stat-tilawah">0</div><div class="text-xs text-gray-600">Tilawah</div>
                                 </div>
                                 <div class="text-center p-3 bg-purple-50 rounded-lg border border-purple-100">
-                                    <div class="text-2xl mb-1">Ⓜ️</div>
-                                    <div class="text-xl font-bold text-purple-700" id="stat-murojaah">0</div>
-                                    <div class="text-xs text-gray-600">Muroja'ah</div>
+                                    <div class="text-2xl mb-1">Ⓜ️</div><div class="text-xl font-bold text-purple-700" id="stat-murojaah">0</div><div class="text-xs text-gray-600">Muroja'ah</div>
                                 </div>
                                 <div class="text-center p-3 bg-yellow-50 rounded-lg border border-yellow-100">
-                                    <div class="text-2xl mb-1">💬</div>
-                                    <div class="text-xl font-bold text-yellow-700" id="stat-hafalan">0</div>
-                                    <div class="text-xs text-gray-600">Hafalan</div>
+                                    <div class="text-2xl mb-1">💬</div><div class="text-xl font-bold text-yellow-700" id="stat-hafalan">0</div><div class="text-xs text-gray-600">Hafalan</div>
                                 </div>
                                 <div class="text-center p-3 bg-pink-50 rounded-lg border border-pink-100">
-                                    <div class="text-2xl mb-1">🩸</div>
-                                    <div class="text-xl font-bold text-pink-700" id="stat-halangan">0</div>
-                                    <div class="text-xs text-gray-600">Halangan</div>
+                                    <div class="text-2xl mb-1">🩸</div><div class="text-xl font-bold text-pink-700" id="stat-halangan">0</div><div class="text-xs text-gray-600">Halangan</div>
                                 </div>
                                 <div class="text-center p-3 bg-red-50 rounded-lg border border-red-100">
-                                    <div class="text-2xl mb-1">❌</div>
-                                    <div class="text-xl font-bold text-red-700" id="stat-tidak">0</div>
-                                    <div class="text-xs text-gray-600">Tdk Tilawah</div>
+                                    <div class="text-2xl mb-1">❌</div><div class="text-xl font-bold text-red-700" id="stat-tidak">0</div><div class="text-xs text-gray-600">Tdk Tilawah</div>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Belum Lapor List -->
                         <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5 flex flex-col">
                             <div class="flex justify-between items-center mb-4 border-b pb-2">
                                 <h3 class="text-lg font-semibold text-gray-800">Belum Lapor</h3>
@@ -259,7 +270,6 @@
                                     <li class="py-2 text-sm text-gray-500 italic">Memuat data...</li>
                                 </ul>
                             </div>
-                            <!-- Hanya admin yang bisa ingatkan via WA (Opsional) -->
                             <button id="btnIngatkan" class="mt-4 w-full text-center text-sm bg-green-50 text-primary font-medium py-2 rounded-lg hover:bg-green-100 transition-colors hidden">
                                 <i class="fab fa-whatsapp mr-1"></i> Copy Pesan Pengingat
                             </button>
@@ -276,103 +286,60 @@
                         </div>
 
                         <form id="formLaporan" onsubmit="submitLaporan(event)" class="space-y-6">
-                            
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                                <!-- Tanggal -->
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">Tanggal</label>
                                     <input type="date" id="lapTanggal" required class="w-full rounded-lg border-gray-300 shadow-sm focus:border-primary focus:ring-primary text-gray-700 py-2.5 px-3 border bg-gray-50">
                                 </div>
-                                <!-- Nama (Readonly) -->
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">Nama Guru</label>
                                     <input type="text" id="lapNama" readonly class="w-full rounded-lg border-gray-200 shadow-sm bg-gray-100 text-gray-500 py-2.5 px-3 border cursor-not-allowed">
                                 </div>
                             </div>
 
-                            <!-- Pilihan Status (Multi Select Checkboxes) -->
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-3">Aktivitas Hari Ini (Bisa pilih lebih dari satu)</label>
                                 <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
                                     <label class="relative flex cursor-pointer rounded-lg border bg-white p-4 shadow-sm hover:bg-green-50 focus:outline-none">
                                         <input type="checkbox" name="lapStatus" value="✅" class="peer sr-only" onchange="toggleJuzInput()">
-                                        <div class="flex w-full items-center justify-between">
-                                            <div class="flex items-center">
-                                                <div class="text-xl mr-3">✅</div>
-                                                <div class="text-sm font-medium text-gray-900">Khalas Juz</div>
-                                            </div>
-                                        </div>
+                                        <div class="flex w-full items-center justify-between"><div class="flex items-center"><div class="text-xl mr-3">✅</div><div class="text-sm font-medium text-gray-900">Khalas Juz</div></div></div>
                                         <span class="pointer-events-none absolute -inset-px rounded-lg border-2 border-transparent peer-checked:border-primary" aria-hidden="true"></span>
                                     </label>
-                                    
                                     <label class="relative flex cursor-pointer rounded-lg border bg-white p-4 shadow-sm hover:bg-blue-50 focus:outline-none">
                                         <input type="checkbox" name="lapStatus" value="📖" class="peer sr-only">
-                                        <div class="flex w-full items-center justify-between">
-                                            <div class="flex items-center">
-                                                <div class="text-xl mr-3">📖</div>
-                                                <div class="text-sm font-medium text-gray-900">Tilawah</div>
-                                            </div>
-                                        </div>
+                                        <div class="flex w-full items-center justify-between"><div class="flex items-center"><div class="text-xl mr-3">📖</div><div class="text-sm font-medium text-gray-900">Tilawah</div></div></div>
                                         <span class="pointer-events-none absolute -inset-px rounded-lg border-2 border-transparent peer-checked:border-blue-500" aria-hidden="true"></span>
                                     </label>
-
                                     <label class="relative flex cursor-pointer rounded-lg border bg-white p-4 shadow-sm hover:bg-purple-50 focus:outline-none">
                                         <input type="checkbox" name="lapStatus" value="Ⓜ️" class="peer sr-only">
-                                        <div class="flex w-full items-center justify-between">
-                                            <div class="flex items-center">
-                                                <div class="text-xl mr-3">Ⓜ️</div>
-                                                <div class="text-sm font-medium text-gray-900">Muroja'ah</div>
-                                            </div>
-                                        </div>
+                                        <div class="flex w-full items-center justify-between"><div class="flex items-center"><div class="text-xl mr-3">Ⓜ️</div><div class="text-sm font-medium text-gray-900">Muroja'ah</div></div></div>
                                         <span class="pointer-events-none absolute -inset-px rounded-lg border-2 border-transparent peer-checked:border-purple-500" aria-hidden="true"></span>
                                     </label>
-
                                     <label class="relative flex cursor-pointer rounded-lg border bg-white p-4 shadow-sm hover:bg-yellow-50 focus:outline-none">
                                         <input type="checkbox" name="lapStatus" value="💬" class="peer sr-only">
-                                        <div class="flex w-full items-center justify-between">
-                                            <div class="flex items-center">
-                                                <div class="text-xl mr-3">💬</div>
-                                                <div class="text-sm font-medium text-gray-900">Hafalan</div>
-                                            </div>
-                                        </div>
+                                        <div class="flex w-full items-center justify-between"><div class="flex items-center"><div class="text-xl mr-3">💬</div><div class="text-sm font-medium text-gray-900">Hafalan</div></div></div>
                                         <span class="pointer-events-none absolute -inset-px rounded-lg border-2 border-transparent peer-checked:border-yellow-500" aria-hidden="true"></span>
                                     </label>
-
                                     <label class="relative flex cursor-pointer rounded-lg border bg-white p-4 shadow-sm hover:bg-pink-50 focus:outline-none">
                                         <input type="checkbox" name="lapStatus" value="🩸" class="peer sr-only">
-                                        <div class="flex w-full items-center justify-between">
-                                            <div class="flex items-center">
-                                                <div class="text-xl mr-3">🩸</div>
-                                                <div class="text-sm font-medium text-gray-900">Halangan</div>
-                                            </div>
-                                        </div>
+                                        <div class="flex w-full items-center justify-between"><div class="flex items-center"><div class="text-xl mr-3">🩸</div><div class="text-sm font-medium text-gray-900">Halangan</div></div></div>
                                         <span class="pointer-events-none absolute -inset-px rounded-lg border-2 border-transparent peer-checked:border-pink-500" aria-hidden="true"></span>
                                     </label>
-
                                     <label class="relative flex cursor-pointer rounded-lg border bg-white p-4 shadow-sm hover:bg-red-50 focus:outline-none">
                                         <input type="checkbox" name="lapStatus" value="❌" class="peer sr-only">
-                                        <div class="flex w-full items-center justify-between">
-                                            <div class="flex items-center">
-                                                <div class="text-xl mr-3">❌</div>
-                                                <div class="text-sm font-medium text-gray-900">Tidak Tilawah</div>
-                                            </div>
-                                        </div>
+                                        <div class="flex w-full items-center justify-between"><div class="flex items-center"><div class="text-xl mr-3">❌</div><div class="text-sm font-medium text-gray-900">Tidak Tilawah</div></div></div>
                                         <span class="pointer-events-none absolute -inset-px rounded-lg border-2 border-transparent peer-checked:border-red-500" aria-hidden="true"></span>
                                     </label>
                                 </div>
                                 <p id="statusError" class="text-red-500 text-xs mt-2 hidden">Pilih minimal satu aktivitas.</p>
                             </div>
 
-                            <!-- Pilihan Juz (Muncul jika Khalas dipilih, bisa pilih banyak) -->
                             <div id="containerJuz" class="hidden bg-green-50 p-4 rounded-lg border border-green-100">
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Juz yang diselesaikan (Bisa lebih dari satu)</label>
-                                <div class="grid grid-cols-5 sm:grid-cols-10 gap-2" id="gridJuz">
-                                    <!-- Script will populate this -->
-                                </div>
+                                <div class="grid grid-cols-5 sm:grid-cols-10 gap-2" id="gridJuz"></div>
                                 <p id="juzError" class="text-red-500 text-xs mt-2 hidden">Pilih minimal satu Juz jika status Khalas.</p>
                             </div>
 
-                            <!-- Catatan -->
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Catatan Tambahan (Opsional)</label>
                                 <textarea id="lapCatatan" rows="3" class="w-full rounded-lg border-gray-300 shadow-sm focus:border-primary focus:ring-primary text-gray-700 py-2 px-3 border placeholder-gray-400" placeholder="Misal: Sedang sakit, tilawah sambil safar, dll."></textarea>
@@ -392,23 +359,19 @@
                     <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
                         <div class="px-6 py-5 border-b border-gray-100 flex justify-between items-center bg-gray-50">
                             <h3 class="text-lg leading-6 font-medium text-gray-900">Riwayat Laporan Anda</h3>
-                            <button onclick="loadRiwayatPribadi()" class="text-primary hover:text-green-700" title="Refresh">
-                                <i class="fas fa-sync-alt"></i>
-                            </button>
+                            <button onclick="loadRiwayatPribadi()" class="text-primary hover:text-green-700" title="Refresh"><i class="fas fa-sync-alt"></i></button>
                         </div>
                         <div class="overflow-x-auto">
                             <table class="min-w-full divide-y divide-gray-200">
                                 <thead class="bg-gray-50">
                                     <tr>
-                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tanggal</th>
-                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Juz</th>
-                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Catatan</th>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Tanggal</th>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Juz</th>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Catatan</th>
                                     </tr>
                                 </thead>
-                                <tbody class="bg-white divide-y divide-gray-200" id="tableBodyRiwayat">
-                                    <!-- Data via JS -->
-                                </tbody>
+                                <tbody class="bg-white divide-y divide-gray-200" id="tableBodyRiwayat"></tbody>
                             </table>
                         </div>
                     </div>
@@ -418,38 +381,31 @@
                 <div id="page-dataGuru" class="page-content hidden">
                     <div class="mb-4 flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-3 sm:space-y-0">
                         <h2 class="text-xl font-bold text-gray-800">Manajemen Data Guru</h2>
-                        <button onclick="openModalGuru('add')" class="bg-primary hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium shadow-sm transition-colors flex items-center">
+                        <button onclick="openModalGuru('add')" class="bg-primary hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center">
                             <i class="fas fa-plus mr-2"></i> Tambah Guru
                         </button>
                     </div>
-
                     <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
                         <div class="p-4 border-b border-gray-100 bg-gray-50 flex justify-between items-center">
                             <div class="relative rounded-md shadow-sm w-full max-w-xs">
-                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                    <i class="fas fa-search text-gray-400"></i>
-                                </div>
-                                <input type="text" id="searchGuru" onkeyup="filterTableGuru()" class="focus:ring-primary focus:border-primary block w-full pl-10 sm:text-sm border-gray-300 rounded-md py-2 px-3 border" placeholder="Cari nama...">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"><i class="fas fa-search text-gray-400"></i></div>
+                                <input type="text" id="searchGuru" onkeyup="filterTableGuru()" class="block w-full pl-10 sm:text-sm border-gray-300 rounded-md py-2 px-3 border" placeholder="Cari nama...">
                             </div>
-                            <button onclick="loadDataGuru()" class="ml-3 text-gray-500 hover:text-primary">
-                                <i class="fas fa-sync-alt"></i>
-                            </button>
+                            <button onclick="loadDataGuru()" class="ml-3 text-gray-500 hover:text-primary"><i class="fas fa-sync-alt"></i></button>
                         </div>
                         <div class="overflow-x-auto">
                             <table class="min-w-full divide-y divide-gray-200">
                                 <thead class="bg-gray-50">
                                     <tr>
-                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama</th>
-                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">L/P</th>
-                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Jabatan</th>
-                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Username</th>
-                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                                        <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Nama</th>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">L/P</th>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Jabatan</th>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Username</th>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+                                        <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Aksi</th>
                                     </tr>
                                 </thead>
-                                <tbody class="bg-white divide-y divide-gray-200" id="tableBodyGuru">
-                                    <!-- Data via JS -->
-                                </tbody>
+                                <tbody class="bg-white divide-y divide-gray-200" id="tableBodyGuru"></tbody>
                             </table>
                         </div>
                     </div>
@@ -461,23 +417,19 @@
                         <div class="flex flex-col sm:flex-row justify-between items-center mb-6 space-y-4 sm:space-y-0">
                             <h2 class="text-xl font-bold text-gray-800">Generate Rekap WhatsApp</h2>
                             <div class="flex space-x-2 w-full sm:w-auto">
-                                <input type="date" id="tglRekapWA" class="border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary sm:text-sm py-2 px-3 border w-full sm:w-auto">
-                                <button onclick="generateWA()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium shadow-sm transition-colors flex-shrink-0">
-                                    Generate
-                                </button>
+                                <input type="date" id="tglRekapWA" class="border-gray-300 rounded-md shadow-sm sm:text-sm py-2 px-3 border w-full sm:w-auto">
+                                <button onclick="generateWA()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium shadow-sm flex-shrink-0">Generate</button>
                             </div>
                         </div>
-
                         <div class="relative bg-gray-50 rounded-lg border border-gray-200 p-4 font-mono text-sm whitespace-pre-wrap min-h-[300px]" id="outputRekapWA">
                             Silahkan pilih tanggal dan klik Generate.
                         </div>
-
                         <div class="mt-4 flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-3">
-                            <button onclick="copyToClipboard('outputRekapWA')" id="btnCopyWA" class="flex-1 bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 px-4 py-2 rounded-md shadow-sm text-sm font-medium flex justify-center items-center transition-colors disabled:opacity-50">
+                            <button onclick="copyToClipboard('outputRekapWA')" id="btnCopyWA" class="flex-1 bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 px-4 py-2 rounded-md shadow-sm text-sm font-medium flex justify-center items-center disabled:opacity-50">
                                 <i class="far fa-copy mr-2"></i> Salin ke Clipboard
                             </button>
-                            <button onclick="shareToWhatsApp()" id="btnShareWA" class="flex-1 bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md shadow-sm text-sm font-medium flex justify-center items-center transition-colors disabled:opacity-50">
-                                <i class="fab fa-whatsapp mr-2"></i> Bagikan ke WA Group
+                            <button onclick="shareToWhatsApp()" id="btnShareWA" class="flex-1 bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md shadow-sm text-sm font-medium flex justify-center items-center disabled:opacity-50">
+                                <i class="fab fa-whatsapp mr-2"></i> Bagikan ke WA
                             </button>
                         </div>
                     </div>
@@ -489,31 +441,26 @@
                         <div class="p-4 border-b border-gray-100 bg-gray-50 flex flex-wrap justify-between items-center gap-3">
                             <h3 class="text-lg font-medium text-gray-900">Seluruh Data Laporan</h3>
                             <div class="flex space-x-2">
-                                <input type="date" id="filterTglLaporanAdmin" class="border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary sm:text-sm py-2 px-3 border">
-                                <button onclick="loadSemuaLaporan()" class="bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 px-3 py-2 rounded-md text-sm">
-                                    Filter
-                                </button>
+                                <input type="date" id="filterTglLaporanAdmin" class="border-gray-300 rounded-md shadow-sm sm:text-sm py-2 px-3 border">
+                                <button onclick="loadSemuaLaporan()" class="bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 px-3 py-2 rounded-md text-sm">Filter</button>
                             </div>
                         </div>
                         <div class="overflow-x-auto">
                             <table class="min-w-full divide-y divide-gray-200">
                                 <thead class="bg-gray-50">
                                     <tr>
-                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tanggal</th>
-                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama Guru</th>
-                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Juz</th>
-                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Catatan</th>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Tanggal</th>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Nama Guru</th>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Juz</th>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Catatan</th>
                                     </tr>
                                 </thead>
-                                <tbody class="bg-white divide-y divide-gray-200" id="tableBodySemuaLaporan">
-                                    <!-- Data via JS -->
-                                </tbody>
+                                <tbody class="bg-white divide-y divide-gray-200" id="tableBodySemuaLaporan"></tbody>
                             </table>
                         </div>
                     </div>
                 </div>
-
             </main>
         </div>
     </div>
@@ -529,49 +476,42 @@
                         <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4" id="modalGuruTitle">Tambah Guru</h3>
                         <input type="hidden" id="guruAction" value="add">
                         <input type="hidden" id="guruId" value="">
-                        
                         <div class="space-y-4">
                             <div>
                                 <label class="block text-sm font-medium text-gray-700">Nama Lengkap</label>
-                                <input type="text" id="guruNama" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm">
+                                <input type="text" id="guruNama" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 sm:text-sm">
                             </div>
                             <div class="grid grid-cols-2 gap-4">
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700">Jenis Kelamin</label>
-                                    <select id="guruJK" required class="mt-1 block w-full bg-white border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm">
-                                        <option value="L">Laki-laki</option>
-                                        <option value="P">Perempuan</option>
+                                    <select id="guruJK" required class="mt-1 block w-full bg-white border border-gray-300 rounded-md shadow-sm py-2 px-3 sm:text-sm">
+                                        <option value="L">Laki-laki</option><option value="P">Perempuan</option>
                                     </select>
                                 </div>
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700">Jabatan</label>
-                                    <input type="text" id="guruJabatan" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm">
+                                    <input type="text" id="guruJabatan" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 sm:text-sm">
                                 </div>
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700">Username</label>
-                                <input type="text" id="guruUsername" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm">
+                                <input type="text" id="guruUsername" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 sm:text-sm">
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700">Password <span class="text-xs text-gray-400 font-normal" id="hintPasswordEdit">(Kosongkan jika tidak ingin ganti)</span></label>
-                                <input type="password" id="guruPassword" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm">
+                                <input type="password" id="guruPassword" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 sm:text-sm">
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700">Status</label>
-                                <select id="guruStatus" required class="mt-1 block w-full bg-white border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm">
-                                    <option value="Aktif">Aktif</option>
-                                    <option value="Tidak Aktif">Tidak Aktif</option>
+                                <select id="guruStatus" required class="mt-1 block w-full bg-white border border-gray-300 rounded-md shadow-sm py-2 px-3 sm:text-sm">
+                                    <option value="Aktif">Aktif</option><option value="Tidak Aktif">Tidak Aktif</option>
                                 </select>
                             </div>
                         </div>
                     </div>
                     <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-                        <button type="submit" id="btnSimpanGuru" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-primary text-base font-medium text-white hover:bg-green-700 focus:outline-none sm:ml-3 sm:w-auto sm:text-sm">
-                            Simpan
-                        </button>
-                        <button type="button" onclick="closeModalGuru()" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
-                            Batal
-                        </button>
+                        <button type="submit" id="btnSimpanGuru" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-primary text-base font-medium text-white hover:bg-green-700 focus:outline-none sm:ml-3 sm:w-auto sm:text-sm">Simpan</button>
+                        <button type="button" onclick="closeModalGuru()" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">Batal</button>
                     </div>
                 </form>
             </div>
@@ -597,13 +537,445 @@
             <p class="mt-1 text-sm text-gray-500" id="toastMessage"></p>
         </div>
         <div class="ml-4 flex-shrink-0 flex">
-            <button onclick="hideToast()" class="bg-white rounded-md inline-flex text-gray-400 hover:text-gray-500 focus:outline-none">
-                <span class="sr-only">Close</span>
-                <i class="fas fa-times"></i>
-            </button>
+            <button onclick="hideToast()" class="bg-white rounded-md inline-flex text-gray-400 hover:text-gray-500 focus:outline-none"><i class="fas fa-times"></i></button>
         </div>
     </div>
 
-    <?!= include('Javascript'); ?>
+    <script>
+        // =========================================================================
+        // PENTING: Ganti string di bawah dengan URL Web App Anda dari Google Apps Script
+        // =========================================================================
+        const API_URL = 'https://script.google.com/macros/s/AKfycbyBnEQyrHc4cyC7OkVPVyAvY_T_srzyMwkcEO6rRB7rjcsJwNykBmsWa25MbTcCrJ72YA/exec'; 
+
+        // --- State Management ---
+        let currentUser = null; 
+        let isDarkMode = false;
+        let dataGuruCache = [];
+
+        // --- Wrapper Komunikasi API ke Google Apps Script ---
+        async function fetchAPI(action, payload = {}) {
+            if (API_URL === 'MASUKKAN_URL_WEB_APP_GAS_ANDA_DISINI') {
+                throw new Error("Silakan konfigurasi variabel API_URL di dalam file index.html terlebih dahulu.");
+            }
+            try {
+                // Menggunakan text/plain untuk menghindari CORS Preflight (OPTIONS)
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify({ action: action, payload: payload })
+                });
+                const result = await response.json();
+                if (result.success !== undefined && result.success === false && result.message) {
+                    throw new Error(result.message);
+                }
+                return result;
+            } catch (error) {
+                console.error("API Error:", error);
+                throw error;
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('currentDateHeader').textContent = formatDateIndo(new Date());
+            populateJuzGrid();
+            const storedUser = sessionStorage.getItem('tilawahUser');
+            if (storedUser) {
+                currentUser = JSON.parse(storedUser);
+                setupUIForUser();
+            } else {
+                document.getElementById('tglRekapWA').valueAsDate = new Date();
+                document.getElementById('filterTglLaporanAdmin').valueAsDate = new Date();
+            }
+        });
+
+        // --- Utility Functions ---
+        function showLoader(text = 'Memproses...') {
+            document.getElementById('loaderText').textContent = text;
+            document.getElementById('globalLoader').classList.remove('hidden');
+        }
+        function hideLoader() { document.getElementById('globalLoader').classList.add('hidden'); }
+
+        function showToast(title, message, type = 'success') {
+            const toast = document.getElementById('toast');
+            const icon = document.getElementById('toastIcon');
+            toast.className = `fixed top-5 right-5 z-[110] transform transition-all duration-300 bg-white border-l-4 ${type === 'success' ? 'border-green-500' : 'border-red-500'} shadow-lg rounded-r-md p-4 max-w-sm flex items-start translate-y-0 opacity-100`;
+            icon.innerHTML = `<i class="fas ${type === 'success' ? 'fa-check-circle text-green-500' : 'fa-exclamation-circle text-red-500'} text-xl"></i>`;
+            document.getElementById('toastTitle').textContent = title;
+            document.getElementById('toastMessage').textContent = message;
+            setTimeout(() => hideToast(), 3000);
+        }
+        function hideToast() {
+            const toast = document.getElementById('toast');
+            toast.classList.add('translate-y-[-150%]', 'opacity-0');
+            toast.classList.remove('translate-y-0', 'opacity-100');
+        }
+
+        function formatDateIndo(dateStr) {
+            if(!dateStr) return "-";
+            return new Date(dateStr).toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+        }
+        function formatDateShort(dateStr) {
+            if(!dateStr) return "-";
+            return new Date(dateStr).toLocaleDateString('id-ID', { year: 'numeric', month: 'short', day: 'numeric' });
+        }
+
+        // --- UI Interactions ---
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            if (sidebar.classList.contains('-translate-x-full')) {
+                sidebar.classList.remove('-translate-x-full', 'hidden');
+                overlay.classList.remove('hidden');
+            } else {
+                sidebar.classList.add('-translate-x-full');
+                setTimeout(() => { sidebar.classList.add('hidden'); overlay.classList.add('hidden'); }, 300);
+            }
+        }
+
+        function showPage(pageId) {
+            document.querySelectorAll('.page-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.nav-link').forEach(el => el.classList.remove('active'));
+            document.getElementById(`page-${pageId}`).classList.remove('hidden');
+            const navLink = document.querySelector(`.nav-link[data-page="${pageId}"]`);
+            if (navLink) navLink.classList.add('active');
+
+            const titleMap = { 'dashboard': 'Dashboard', 'dataGuru': 'Manajemen Data Guru', 'rekapHarian': 'Rekap Harian (WhatsApp)', 'semuaLaporan': 'Semua Data Laporan', 'inputLaporan': 'Form Isi Laporan', 'riwayatPribadi': 'Riwayat Laporan Saya' };
+            document.getElementById('pageTitle').textContent = titleMap[pageId] || 'Aplikasi';
+
+            if (pageId === 'dashboard') loadDashboard();
+            if (pageId === 'dataGuru') loadDataGuru();
+            if (pageId === 'riwayatPribadi') loadRiwayatPribadi();
+            if (pageId === 'semuaLaporan') loadSemuaLaporan();
+
+            if (window.innerWidth < 768) toggleSidebar();
+        }
+
+        function toggleDarkMode() {
+            isDarkMode = !isDarkMode;
+            document.documentElement.classList.toggle('dark');
+            const icon = document.getElementById('darkModeIcon');
+            icon.className = isDarkMode ? "fas fa-sun text-xl" : "fas fa-moon text-xl";
+        }
+
+        // --- Authentication ---
+        async function handleLogin(e) {
+            e.preventDefault();
+            const user = document.getElementById('username').value;
+            const pass = document.getElementById('password').value;
+            const btn = document.getElementById('btnLogin');
+            const errDiv = document.getElementById('loginError');
+
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Memeriksa...';
+            errDiv.classList.add('hidden');
+
+            try {
+                const result = await fetchAPI('loginUser', { username: user, password: pass });
+                if (result.success) {
+                    currentUser = result;
+                    sessionStorage.setItem('tilawahUser', JSON.stringify(currentUser));
+                    setupUIForUser();
+                } else {
+                    errDiv.textContent = result.message || "Gagal masuk.";
+                    errDiv.classList.remove('hidden');
+                }
+            } catch (err) {
+                errDiv.textContent = 'Terjadi kesalahan: ' + err.message;
+                errDiv.classList.remove('hidden');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<span class="absolute left-0 inset-y-0 flex items-center pl-3"><i class="fas fa-lock text-green-300 group-hover:text-green-200"></i></span> Masuk';
+            }
+        }
+
+        function handleLogout() {
+            currentUser = null;
+            sessionStorage.removeItem('tilawahUser');
+            document.getElementById('appView').classList.add('hidden');
+            document.getElementById('loginView').classList.remove('hidden');
+            document.getElementById('loginForm').reset();
+        }
+
+        function setupUIForUser() {
+            document.getElementById('loginView').classList.add('hidden');
+            document.getElementById('appView').classList.remove('hidden');
+            document.getElementById('userNameDisplay').textContent = currentUser.name;
+            const badge = document.getElementById('userRoleBadge');
+            badge.textContent = (currentUser.role === 'admin' ? 'Administrator' : 'Guru');
+            
+            if (currentUser.role === 'admin') {
+                badge.className = 'inline-block mt-1 px-2 py-0.5 text-xs font-semibold rounded-full bg-red-100 text-red-800';
+                document.getElementById('menuAdmin').classList.remove('hidden');
+                showPage('dashboard');
+            } else {
+                badge.className = 'inline-block mt-1 px-2 py-0.5 text-xs font-semibold rounded-full bg-blue-100 text-blue-800';
+                document.getElementById('menuAdmin').classList.add('hidden');
+                document.getElementById('lapTanggal').valueAsDate = new Date();
+                document.getElementById('lapNama').value = currentUser.name;
+                showPage('inputLaporan');
+            }
+        }
+
+        // --- Dashboard Logic ---
+        async function loadDashboard() {
+            showLoader('Memuat statistik...');
+            try {
+                const res = await fetchAPI('getDashboardStats', { tanggal: new Date().toISOString().split('T')[0] });
+                const stats = res.data;
+                document.getElementById('stat-totalGuru').textContent = stats.totalGuru;
+                document.getElementById('stat-sudahLapor').textContent = stats.sudahLapor;
+                document.getElementById('stat-belumLapor').textContent = stats.belumLapor;
+                document.getElementById('stat-progressText').textContent = stats.progress + '%';
+                document.getElementById('stat-progressBar').style.width = stats.progress + '%';
+                document.getElementById('stat-khalas').textContent = stats.khalas;
+                document.getElementById('stat-tilawah').textContent = stats.tilawahSebagian;
+                document.getElementById('stat-murojaah').textContent = stats.murojaah;
+                document.getElementById('stat-hafalan').textContent = stats.hafalan;
+                document.getElementById('stat-halangan').textContent = stats.halangan;
+                document.getElementById('stat-tidak').textContent = stats.tidakTilawah;
+
+                const listUl = document.getElementById('listBelumLapor');
+                document.getElementById('stat-belumCountBadge').textContent = stats.listBelumLapor.length + ' Guru';
+                listUl.innerHTML = '';
+                
+                if (stats.listBelumLapor.length === 0) {
+                    listUl.innerHTML = '<li class="py-3 text-sm text-center text-green-600 font-medium"><i class="fas fa-check-circle mr-1"></i> Alhamdulillah, semua guru sudah lapor.</li>';
+                    document.getElementById('btnIngatkan').classList.add('hidden');
+                } else {
+                    stats.listBelumLapor.forEach(nama => {
+                        listUl.innerHTML += `<li class="py-2.5 text-sm text-gray-700 font-medium flex items-center"><div class="w-2 h-2 rounded-full bg-red-400 mr-2"></div>${nama}</li>`;
+                    });
+                    if (currentUser && currentUser.role === 'admin') {
+                        document.getElementById('btnIngatkan').classList.remove('hidden');
+                        document.getElementById('btnIngatkan').onclick = () => {
+                            let msg = "Assalamu'alaikum wr. wb.\nMohon izin mengingatkan kepada Bapak/Ibu guru berikut untuk mengisi laporan tilawah harian hari ini:\n\n";
+                            stats.listBelumLapor.forEach((n, i) => msg += `${i+1}. ${n}\n`);
+                            msg += "\nTerima kasih atas perhatiannya. Jazakumullah khairan.";
+                            copyTextToClipboard(msg);
+                        };
+                    }
+                }
+            } catch (err) {
+                showToast('Error', 'Gagal memuat dashboard: ' + err.message, 'error');
+            } finally {
+                hideLoader();
+            }
+        }
+
+        // --- Input Laporan Logic ---
+        function populateJuzGrid() {
+            let html = '';
+            for(let i=1; i<=30; i++) {
+                html += `<label class="flex items-center cursor-pointer p-2 border rounded hover:bg-green-100 bg-white justify-center"><input type="checkbox" name="lapJuz" value="${i}" class="mr-2 h-4 w-4 text-primary"><span class="text-sm font-medium text-gray-700">${i}</span></label>`;
+            }
+            document.getElementById('gridJuz').innerHTML = html;
+        }
+
+        function toggleJuzInput() {
+            const isKhalas = Array.from(document.querySelectorAll('input[name="lapStatus"]:checked')).some(cb => cb.value === '✅');
+            const container = document.getElementById('containerJuz');
+            if (isKhalas) {
+                container.classList.remove('hidden');
+            } else {
+                container.classList.add('hidden');
+                document.querySelectorAll('input[name="lapJuz"]').forEach(cb => cb.checked = false);
+            }
+        }
+
+        async function submitLaporan(e) {
+            e.preventDefault();
+            const statusChecked = Array.from(document.querySelectorAll('input[name="lapStatus"]:checked')).map(cb => cb.value);
+            const juzChecked = Array.from(document.querySelectorAll('input[name="lapJuz"]:checked')).map(cb => cb.value);
+
+            if (statusChecked.length === 0) return document.getElementById('statusError').classList.remove('hidden');
+            else document.getElementById('statusError').classList.add('hidden');
+            
+            if (statusChecked.includes('✅') && juzChecked.length === 0) return document.getElementById('juzError').classList.remove('hidden');
+            else document.getElementById('juzError').classList.add('hidden');
+
+            const data = {
+                tanggal: document.getElementById('lapTanggal').value,
+                status: statusChecked,
+                juz: juzChecked,
+                catatan: document.getElementById('lapCatatan').value
+            };
+
+            showLoader('Menyimpan laporan...');
+            const btnSubmit = document.getElementById('btnSubmitLaporan');
+            btnSubmit.disabled = true;
+
+            try {
+                const res = await fetchAPI('simpanLaporan', { data: data, username: currentUser.username });
+                if (res.success) {
+                    showToast('Sukses', res.message, 'success');
+                    document.getElementById('formLaporan').reset();
+                    document.getElementById('lapNama').value = currentUser.name;
+                    document.getElementById('lapTanggal').valueAsDate = new Date();
+                    toggleJuzInput();
+                    setTimeout(() => showPage('riwayatPribadi'), 1500);
+                }
+            } catch (err) {
+                showToast('Error', err.message, 'error');
+            } finally {
+                hideLoader();
+                btnSubmit.disabled = false;
+            }
+        }
+
+        async function loadRiwayatPribadi() {
+            const tbody = document.getElementById('tableBodyRiwayat');
+            tbody.innerHTML = '<tr><td colspan="4" class="px-6 py-4 text-center text-sm text-gray-500">Memuat data...</td></tr>';
+            try {
+                const res = await fetchAPI('getLaporanPribadi', { username: currentUser.username });
+                const data = res.data;
+                tbody.innerHTML = '';
+                if(data.length === 0) return tbody.innerHTML = '<tr><td colspan="4" class="px-6 py-4 text-center text-sm text-gray-500">Belum ada riwayat laporan.</td></tr>';
+                data.forEach(row => {
+                    let juzStr = row.Juz ? `<span class="bg-green-100 text-green-800 text-xs px-2 py-0.5 rounded mr-1">Juz ${row.Juz}</span>` : '-';
+                    let statusHtml = '';
+                    String(row.Status).split(',').forEach(s => { if(s.trim()) statusHtml += `<span class="text-lg mr-1">${s.trim()}</span>`; });
+                    tbody.innerHTML += `<tr class="hover:bg-gray-50"><td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${formatDateShort(row.Tanggal)}</td><td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${statusHtml}</td><td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${juzStr}</td><td class="px-6 py-4 text-sm text-gray-500">${row.Catatan || '-'}</td></tr>`;
+                });
+            } catch (err) {
+                tbody.innerHTML = `<tr><td colspan="4" class="px-6 py-4 text-center text-sm text-red-500">Error: ${err.message}</td></tr>`;
+            }
+        }
+
+        async function loadDataGuru() {
+            const tbody = document.getElementById('tableBodyGuru');
+            tbody.innerHTML = '<tr><td colspan="6" class="px-6 py-4 text-center text-sm text-gray-500"><i class="fas fa-spinner fa-spin mr-2"></i>Memuat data...</td></tr>';
+            try {
+                const res = await fetchAPI('getDaftarGuru');
+                dataGuruCache = res.data; 
+                renderTableGuru(dataGuruCache);
+            } catch (err) {
+                tbody.innerHTML = `<tr><td colspan="6" class="px-6 py-4 text-center text-sm text-red-500">Error: ${err.message}</td></tr>`;
+            }
+        }
+
+        function renderTableGuru(data) {
+            const tbody = document.getElementById('tableBodyGuru');
+            tbody.innerHTML = '';
+            if(data.length === 0) return tbody.innerHTML = '<tr><td colspan="6" class="px-6 py-4 text-center text-sm text-gray-500">Belum ada data guru.</td></tr>';
+            data.forEach(row => {
+                let statusBadge = row.Status === 'Aktif' ? '<span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Aktif</span>' : '<span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">Tidak Aktif</span>';
+                tbody.innerHTML += `<tr class="hover:bg-gray-50 transition-colors"><td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${row.Nama}</td><td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${row['Jenis Kelamin'] || '-'}</td><td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${row.Jabatan}</td><td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${row.Username}</td><td class="px-6 py-4 whitespace-nowrap">${statusBadge}</td><td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium"><button onclick='openModalGuru("edit", ${JSON.stringify(row).replace(/'/g, "&apos;")})' class="text-indigo-600 hover:text-indigo-900 mr-3"><i class="fas fa-edit"></i> Edit</button><button onclick='deleteGuru("${row.ID}")' class="text-red-600 hover:text-red-900"><i class="fas fa-trash"></i> Hapus</button></td></tr>`;
+            });
+        }
+
+        function filterTableGuru() {
+            const searchTerm = document.getElementById('searchGuru').value.toLowerCase();
+            renderTableGuru(dataGuruCache.filter(guru => guru.Nama.toLowerCase().includes(searchTerm) || guru.Username.toLowerCase().includes(searchTerm)));
+        }
+
+        function openModalGuru(action, data = null) {
+            document.getElementById('modalGuru').classList.remove('hidden');
+            document.getElementById('guruAction').value = action;
+            if (action === 'add') {
+                document.getElementById('modalGuruTitle').textContent = 'Tambah Guru Baru';
+                document.getElementById('formInputGuru').reset();
+                document.getElementById('guruId').value = '';
+                document.getElementById('guruPassword').required = true;
+                document.getElementById('hintPasswordEdit').classList.add('hidden');
+            } else if (action === 'edit' && data) {
+                document.getElementById('modalGuruTitle').textContent = 'Edit Data Guru';
+                document.getElementById('guruId').value = data.ID;
+                document.getElementById('guruNama').value = data.Nama;
+                document.getElementById('guruJK').value = data['Jenis Kelamin'] || 'L';
+                document.getElementById('guruJabatan').value = data.Jabatan;
+                document.getElementById('guruUsername').value = data.Username;
+                document.getElementById('guruStatus').value = data.Status;
+                document.getElementById('guruPassword').value = ''; 
+                document.getElementById('guruPassword').required = false; 
+                document.getElementById('hintPasswordEdit').classList.remove('hidden');
+            }
+        }
+        function closeModalGuru() { document.getElementById('modalGuru').classList.add('hidden'); }
+
+        async function submitFormGuru(e) {
+            e.preventDefault();
+            const data = {
+                action: document.getElementById('guruAction').value, id: document.getElementById('guruId').value,
+                nama: document.getElementById('guruNama').value, jk: document.getElementById('guruJK').value,
+                jabatan: document.getElementById('guruJabatan').value, username: document.getElementById('guruUsername').value,
+                password: document.getElementById('guruPassword').value, status: document.getElementById('guruStatus').value
+            };
+            showLoader('Menyimpan data...');
+            try {
+                const res = await fetchAPI('simpanGuru', { data: data });
+                if (res.success) { showToast('Sukses', res.message, 'success'); closeModalGuru(); loadDataGuru(); }
+            } catch (err) {
+                showToast('Error', err.message, 'error');
+            } finally { hideLoader(); }
+        }
+
+        function deleteGuru(id) {
+            if(!window.confirmDialogCreated) {
+                const div = document.createElement('div');
+                div.id = 'customConfirm';
+                div.className = 'fixed inset-0 z-[120] bg-gray-600 bg-opacity-50 hidden flex items-center justify-center';
+                div.innerHTML = `<div class="bg-white rounded-lg p-6 max-w-sm w-full mx-4 shadow-xl text-center"><i class="fas fa-exclamation-triangle text-red-500 text-4xl mb-4"></i><h3 class="text-lg font-medium text-gray-900 mb-2">Konfirmasi Hapus</h3><p class="text-sm text-gray-500 mb-4">Apakah Anda yakin ingin menghapus data guru ini?</p><div class="flex justify-center space-x-3"><button id="btnConfirmCancel" class="px-4 py-2 bg-gray-100 rounded-md">Batal</button><button id="btnConfirmOk" class="px-4 py-2 bg-red-600 text-white rounded-md">Hapus</button></div></div>`;
+                document.body.appendChild(div);
+                window.confirmDialogCreated = true;
+            }
+            const confirmDialog = document.getElementById('customConfirm');
+            confirmDialog.classList.remove('hidden');
+            document.getElementById('btnConfirmCancel').onclick = () => confirmDialog.classList.add('hidden');
+            document.getElementById('btnConfirmOk').onclick = async () => {
+                confirmDialog.classList.add('hidden');
+                showLoader('Menghapus...');
+                try {
+                    const res = await fetchAPI('hapusGuru', { id: id });
+                    showToast('Sukses', res.message, 'success'); loadDataGuru();
+                } catch (err) { showToast('Error', err.message, 'error'); } finally { hideLoader(); }
+            };
+        }
+
+        async function loadSemuaLaporan() {
+            const tbody = document.getElementById('tableBodySemuaLaporan');
+            const filterTgl = document.getElementById('filterTglLaporanAdmin').value;
+            tbody.innerHTML = '<tr><td colspan="5" class="px-6 py-4 text-center text-sm text-gray-500"><i class="fas fa-spinner fa-spin mr-2"></i>Memuat...</td></tr>';
+            try {
+                const res = await fetchAPI('getSemuaLaporan', { filterTanggal: filterTgl });
+                const data = res.data;
+                tbody.innerHTML = '';
+                if(data.length === 0) return tbody.innerHTML = '<tr><td colspan="5" class="px-6 py-4 text-center text-sm text-gray-500">Tidak ada data.</td></tr>';
+                data.sort((a, b) => new Date(b.Tanggal) - new Date(a.Tanggal));
+                data.forEach(row => {
+                    let statusHtml = '';
+                    String(row.Status).split(',').forEach(s => { if(s.trim()) statusHtml += `<span class="text-lg mr-1">${s.trim()}</span>`; });
+                    tbody.innerHTML += `<tr class="hover:bg-gray-50"><td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${formatDateShort(row.Tanggal)}</td><td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${row['Nama Guru']}</td><td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${statusHtml}</td><td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${row.Juz ? 'Juz ' + row.Juz : '-'}</td><td class="px-6 py-4 text-sm text-gray-500 truncate max-w-xs">${row.Catatan || '-'}</td></tr>`;
+                });
+            } catch (err) { tbody.innerHTML = `<tr><td colspan="5" class="px-6 py-4 text-center text-red-500">${err.message}</td></tr>`; }
+        }
+
+        async function generateWA() {
+            const tgl = document.getElementById('tglRekapWA').value;
+            if(!tgl) return showToast('Peringatan', 'Pilih tanggal dahulu', 'error');
+            const outBox = document.getElementById('outputRekapWA');
+            const btnGen = document.querySelector('button[onclick="generateWA()"]');
+            outBox.innerHTML = '<div class="flex items-center justify-center h-full text-gray-500"><i class="fas fa-spinner fa-spin mr-2"></i> Meng-generate rekap...</div>';
+            btnGen.disabled = true;
+            try {
+                const res = await fetchAPI('generateRekapWA', { tanggal: tgl });
+                outBox.textContent = res.data;
+            } catch (err) {
+                outBox.textContent = 'Gagal: ' + err.message;
+            } finally { btnGen.disabled = false; }
+        }
+
+        function copyToClipboard(elementId) { copyTextToClipboard(document.getElementById(elementId).textContent); }
+        function copyTextToClipboard(text) {
+            const textArea = document.createElement("textarea");
+            textArea.value = text;
+            textArea.style.position = "fixed"; document.body.appendChild(textArea);
+            textArea.focus(); textArea.select();
+            try {
+                document.execCommand('copy') ? showToast('Sukses', 'Disalin!', 'success') : showToast('Error', 'Gagal', 'error');
+            } catch (err) { showToast('Error', 'Gagal', 'error'); }
+            document.body.removeChild(textArea);
+        }
+        function shareToWhatsApp() { window.open(`https://wa.me/?text=${encodeURIComponent(document.getElementById('outputRekapWA').textContent)}`, '_blank'); }
+    </script>
 </body>
 </html>
