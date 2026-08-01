@@ -545,7 +545,7 @@
         // =========================================================================
         // PENTING: Ganti string di bawah dengan URL Web App Anda dari Google Apps Script
         // =========================================================================
-        const API_URL = 'https://script.google.com/macros/s/AKfycbyBnEQyrHc4cyC7OkVPVyAvY_T_srzyMwkcEO6rRB7rjcsJwNykBmsWa25MbTcCrJ72YA/exec'; 
+        const API_URL = 'https://script.google.com/macros/s/AKfycbwDWwfX0g3m_hzFrqy8KeTIPG2kRz4HckDDVjtY4-BWeRHirFM3MjM8-uFhQL6GoFhTeA/exec'; 
 
         // --- State Management ---
         let currentUser = null; 
@@ -554,7 +554,7 @@
 
         // --- Wrapper Komunikasi API ke Google Apps Script ---
         async function fetchAPI(action, payload = {}) {
-            if (API_URL === 'https://script.google.com/macros/s/AKfycbyBnEQyrHc4cyC7OkVPVyAvY_T_srzyMwkcEO6rRB7rjcsJwNykBmsWa25MbTcCrJ72YA/exec') {
+            if (API_URL === 'https://script.google.com/macros/s/AKfycbwDWwfX0g3m_hzFrqy8KeTIPG2kRz4HckDDVjtY4-BWeRHirFM3MjM8-uFhQL6GoFhTeA/exec') {
                 throw new Error("Silakan konfigurasi variabel API_URL di dalam file index.html terlebih dahulu.");
             }
             try {
